@@ -14,4 +14,5 @@ public interface CafeRepository extends JpaRepository<Cafe, Integer>{
 
     List<Cafe> findByNameOrderByNameAsc(String location);
 
+    List<Cafe> findAll();
 }
