@@ -13,8 +13,8 @@ public class Cafe {
     private Integer id;
     private String name;
     private String location;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     @ElementCollection
     private List<String> tags;
 }
