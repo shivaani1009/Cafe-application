@@ -11,6 +11,8 @@ public class CafeMapper {
         dto.setName(cafe.getName());
         dto.setLocation(cafe.getLocation());
         dto.setTags(cafe.getTags());
+        dto.setLatitude(cafe.getLatitude());
+        dto.setLongitude(cafe.getLongitude());
         return dto;
     }
 
@@ -19,6 +21,8 @@ public class CafeMapper {
         cafe.setName(dto.getName());
         cafe.setLocation(dto.getLocation());
         cafe.setTags(dto.getTags());
+        cafe.setLatitude(dto.getLatitude());
+        cafe.setLongitude(dto.getLongitude());
         return cafe;
     }
 }
