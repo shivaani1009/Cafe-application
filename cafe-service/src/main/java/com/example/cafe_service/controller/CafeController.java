@@ -31,6 +31,11 @@ public class CafeController{
     public List<CafeDto> getCafesByLocation(@RequestParam String location) {
         return cafeService.getCafesByLocation(location);
     }
+    
+    @GetMapping("/nearby") 
+    public List<CafeDto> getNearbyCafes(@RequestParam("lat") Double userLat, @RequestParam("long") Double userLong){
+        return cafeService.getNearbyCafes(userLat, userLong);
+    }
 
     // Add a new cafe
     @PostMapping
