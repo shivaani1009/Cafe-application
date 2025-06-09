@@ -8,6 +8,7 @@ public class TableService {
 
     private final TableRepository tableRepository;
 
+    // Constructor injection
     public TableService(TableRepository tableRepository) {
         this.tableRepository = tableRepository;
     }
@@ -33,7 +34,7 @@ public class TableService {
         Map<Integer, Table> tableEntities = new HashMap<>();
         for (Map.Entry<Integer, TableDto> entry : tablesData.entrySet()){
             TableDto tableDto = entry.getValue();
-            tableEntities.put(entry.getKey(), new Table(tableDto.getTableId(), tableDto.getIsAvailable(), tableDto.getSeats()));
+            tableEntities.put(entry.getKey(), new Table (tableDto.getTableId(), tableDto.getIsAvailable(), tableDto.getSeats()));
         }
         return tableRepository.addTables(cafeId, tableEntities);
     }
