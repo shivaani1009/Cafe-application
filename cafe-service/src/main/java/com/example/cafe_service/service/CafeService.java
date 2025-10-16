@@ -20,6 +20,10 @@ public class CafeService {
 
     public List<CafeDto> getAllCafes(){
         List<Cafe> cafes = CafeRepository.findAll();
+        if (cafes.isEmpty()) {
+        throw new CafeNotFoundException("No cafes found");
+        }
+                            
         return cafes.stream()
                             .map(CafeMapper::toDto)
                             .collect(Collectors.toList());
@@ -33,6 +37,20 @@ public class CafeService {
 
     public CafeDto addCafe(CafeDto cafeDto) {
         Cafe cafe = CafeMapper.toEntity(cafeDto);
+        Cafe savedCafe = CafeRepository.save(cafe);
+        return CafeMapper.toDto(savedCafe);
+    }
+    public CafeDto updateCafe(Integer id, CafeDto cafeDto){
+        //need to check if the cafe exists
+        Cafe cafe = CafeRepository.findById(id)
+                        .orElseThrow(() -> new CafeNotFoundException("Cafe not found with id" + id));
+        
+        cafe.setName(cafeDto.getName());
+        cafe.setLocation(cafeDto.getLocation());
+        cafe.setLatitude(cafeDto.getLatitude());
+        cafe.setLongitude(cafeDto.getLongitude());
+        cafe.setTags(cafeDto.getTags());
+
         Cafe savedCafe = CafeRepository.save(cafe);
         return CafeMapper.toDto(savedCafe);
     }

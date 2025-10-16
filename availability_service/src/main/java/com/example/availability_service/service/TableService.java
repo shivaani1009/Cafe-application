@@ -1,8 +1,13 @@
 package com.example.availability_service.service;
-
+import com.example.availability_service.model.Table;
 import com.example.availability_service.dto.TableDto;
 import com.example.availability_service.repository.TableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.CompletableFuture;
+import java.util.Map;
+import java.util.HashMap;
+import com.example.availability_service.mapper.TableMapper;
 @Service
 public class TableService {
 
@@ -17,16 +22,19 @@ public class TableService {
         return tableRepository.findById(cafeId, tableId)
                 .thenApply(table -> {
                     if (table != null) {
-                        return new TableDto(table.getId(), table.getAvailable(), table.getSeats());
+                        return new TableDto(table.getTableId(), table.getIsAvailable(), table.getSeats());
                     } else {
                         return null; // or throw an exception if preferred
                     }
                 });
     }
 
-    public CompletableFuture<Void> saveTable(Integer cafeId, Integer tableId, TableDto tableDto) {
-        return tableRepository.save(cafeId, tableId, tableDto.getIsAvailable(), tableDto.getSeats());
+    public CompletableFuture<Void> saveTable(Integer cafeId, TableDto tableDto){
+        Table table = TableMapper.toEntity(tableDto);
+        return tableRepository.save(cafeId, table.getTableId(), table.getIsAvailable(), table.getSeats())
+            .thenAccept(aVoid -> System.out.println("Table saved successfully"));
     }
+
     public CompletableFuture<Void> deleteTable(Integer cafeId, Integer tableId) {
         return tableRepository.delete(cafeId, tableId);
     }

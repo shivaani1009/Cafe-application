@@ -1,5 +1,21 @@
 package com.example.availability_service.repository;
+import com.example.availability_service.model.Table;
+import com.google.firebase.database.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseError;
+import org.springframework.stereotype.Component;
 
+@Component
+public class TableRepository{
+    private final DatabaseReference dbRef;
+    public TableRepository(DatabaseReference dbRef){
+        this.dbRef = dbRef;
+}
 //add or update a table in a cafe
 public CompletableFuture<Void> save(Integer cafeId, Integer tableId, Boolean isAvailable, Integer seats){
     CompletableFuture<Void> future = new CompletableFuture<>();
@@ -22,38 +38,42 @@ public CompletableFuture<Void> save(Integer cafeId, Integer tableId, Boolean isA
 public CompletableFuture<Table> findById(Integer cafeId, Integer tableId) {
     CompletableFuture<Table> future = new CompletableFuture<>();
     DatabaseReference tableRef = dbRef.child(cafeId.toString()).child("tables").child(tableId.toString());
-    
-    tableRef.get().addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-            DataSnapshot snapshot = task.getResult();
+
+    tableRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot snapshot) {
             if (snapshot.exists()) {
                 Table table = snapshot.getValue(Table.class);
                 future.complete(table);
             } else {
                 future.complete(null);
             }
-        } else {
-            future.completeExceptionally(task.getException());
+        }
+
+        @Override
+        public void onCancelled(DatabaseError error) {
+            future.completeExceptionally(error.toException());
         }
     });
 
     return future;
 }
-//remove a table
+
 public CompletableFuture<Void> delete(Integer cafeId, Integer tableId) {
     CompletableFuture<Void> future = new CompletableFuture<>();
     DatabaseReference tableRef = dbRef.child(cafeId.toString()).child("tables").child(tableId.toString());
-    
-    tableRef.removeValue().addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-            future.complete(null);
+
+    tableRef.removeValue((error, ref) -> {
+        if (error != null) {
+            future.completeExceptionally(error.toException());
         } else {
-            future.completeExceptionally(task.getException());
+            future.complete(null);
         }
     });
 
     return future;
 }
+
 
 //add multiple tables at once for a new cafe
 public CompletableFuture<Void> addTables(Integer cafeId, Map<Integer, Table> tablesData){
@@ -74,4 +94,5 @@ public CompletableFuture<Void> addTables(Integer cafeId, Map<Integer, Table> tab
         });
     }
     return future;
+}
 }

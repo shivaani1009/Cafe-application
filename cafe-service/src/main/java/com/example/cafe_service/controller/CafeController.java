@@ -17,7 +17,13 @@ public class CafeController{
     // Get all cafes
     @GetMapping
     public List<CafeDto> getAllCafes() {
-        return cafeService.getAllCafes();
+        try{
+            return cafeService.getAllCafes();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // Get a single cafe by ID
@@ -41,6 +47,11 @@ public class CafeController{
     @PostMapping
     public CafeDto addCafe(@RequestBody CafeDto cafeDto) {
         return cafeService.addCafe(cafeDto);
+    }
+
+    @PutMapping("/{id}")
+    public CafeDto updateCafe(@PathVariable Integer id, @RequestBody CafeDto cafeDto ){
+        return cafeService.updateCafe(id, cafeDto);
     }
 
     // Delete a cafe

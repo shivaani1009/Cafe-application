@@ -1,9 +1,9 @@
-package.com.example.availability_service.model;
+package com.example.availability_service.model;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
 public class Table{
-    @Id
     private Integer tableId;
     private Boolean isAvailable;
     private Integer seats;
